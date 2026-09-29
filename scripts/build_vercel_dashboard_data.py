@@ -155,7 +155,7 @@ def main() -> None:
         json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8"
     )
 
-    source_images = ROOT / "웰니스관광지_사진"
+    source_images = ROOT / "images"
     image_map = {"wanju.jpg": "완주아원고택.jpg", "sunchang.jpg": "순창쉴랜드.jpg", "wando.jpg": "완도해양치유센터.jpg", "muju.jpg": "무주태권도원.jpg"}
     for target, source in image_map.items():
         shutil.copy2(source_images / source, PUBLIC / "sites" / target)
