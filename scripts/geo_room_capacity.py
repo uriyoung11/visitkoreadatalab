@@ -1,7 +1,7 @@
 """
 좌표 기반 숙박 공급 capacity(객실수) 파이프라인
 
-88개 웰니스 관광지(wellness_88_geocoded.csv, WGS84)를 기준으로, 전국
+88개 웰니스 관광지(data/웰니스관광지_88개_좌표.csv, WGS84)를 기준으로, 전국
 숙박업 인허가 원자료(data/문화_숙박업.csv, EPSG:5174 투영좌표)에서 반경
 1/2/5km 내 객실 수를 계산한다. data/행정동경계.zip(EPSG:5186, 3,559개
 행정동 폴리곤)으로 "같은 행정동" 기준 교차검증도 병행한다.
@@ -21,7 +21,7 @@ CRS 검증(별도로 pyproj 랜드마크 대조 3곳 — 해운대/서울/제주
 확인됨, scripts/geocode_wellness88.py 실행 로그 참고):
   - 문화_숙박업.csv 좌표정보(X/Y): EPSG:5174
   - 행정동경계.zip: EPSG:5186 (.prj WKT 파라미터와 정확히 일치)
-  - wellness_88_geocoded.csv mapx/mapy: EPSG:4326(WGS84, TourAPI 표준)
+  - data/웰니스관광지_88개_좌표.csv mapx/mapy: EPSG:4326(WGS84, TourAPI 표준)
 
 실행:
     venv/bin/python3 scripts/geo_room_capacity.py
@@ -37,7 +37,7 @@ CRS 검증(별도로 pyproj 랜드마크 대조 3곳 — 해운대/서울/제주
     자기 자신이 잡히는 문제가 있다 — 이름+근접거리(<50m)로 자기매칭을
     찾아 해당 시설 자신의 RoomSupply 계산에서만 제외한다.
   - 일부 시설 좌표는 도로/읍면 중심점 근사치(수동 지오코딩 시 확인,
-    wellness_88_geocoded.csv의 match_confidence 참고) — low 등급은 특히
+    data/웰니스관광지_88개_좌표.csv의 match_confidence 참고) — low 등급은 특히
     반경 1km 결과의 신뢰도가 떨어질 수 있다.
 """
 from __future__ import annotations
@@ -81,7 +81,7 @@ MONTH_START, MONTH_END = "2021-04", "2026-03"
 # --------------------------------------------------------------------------
 
 def load_facilities() -> pd.DataFrame:
-    df = pd.read_csv(ROOT / "wellness_88_geocoded.csv")
+    df = pd.read_csv(ROOT / "data/웰니스관광지_88개_좌표.csv")
     df = df.dropna(subset=["mapx", "mapy"]).copy()
     t = pyproj.Transformer.from_crs(CRS_WGS84, "EPSG:5179", always_xy=True)
     df["x5179"], df["y5179"] = t.transform(df["mapx"].values, df["mapy"].values)

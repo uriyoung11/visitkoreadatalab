@@ -76,7 +76,7 @@ def get_total_count(mapx: float, mapy: float, content_type_id: str, api_key: str
 
 def main():
     api_key = load_api_key()
-    fac = pd.read_csv(ROOT / "wellness_88_geocoded.csv")
+    fac = pd.read_csv(ROOT / "data/웰니스관광지_88개_좌표.csv")
     fac = fac.dropna(subset=["mapx", "mapy"])
 
     if CACHE_CSV.exists():
@@ -119,7 +119,7 @@ def main():
     print("\n=== 관광 생태계 밀도(반경 5km, 숙박 제외 총합), 하위 15개소 ===")
     print(summary.head(15).to_string(index=False))
     print("\n=== 핵심 10개소 ===")
-    fac88 = pd.read_csv(ROOT / "wellness_88_geocoded.csv")
+    fac88 = pd.read_csv(ROOT / "data/웰니스관광지_88개_좌표.csv")
     core_names = ["산림힐링재단(하이힐링원)", "삼척 활기 치유의숲", "숲애서", "국립칠곡숲체원",
                   "국립제천치유의숲", "완도 해양치유센터", "쉴(SHIL)랜드", "레인보우 힐링센터",
                   "아원고택", "소백산생태탐방원"]

@@ -1,6 +1,6 @@
 """
 88개 웰니스 관광지의 좌표를 한국관광공사 TourAPI(KorService2 searchKeyword2)로
-확보해 wellness_88_geocoded.csv에 캐시한다.
+확보해 data/웰니스관광지_88개_좌표.csv에 캐시한다.
 
 실행:
     venv/bin/python3 scripts/geocode_wellness88.py            # 미확보/미검토분만 호출
@@ -21,9 +21,9 @@
   지역이 하나도 안 맞으면 low(자동 채택하지 않고 후보만 기록), 아예
   결과가 없으면 unmatched로 review_needed=True 표시한다.
 - geocode_source=manual인 행은 사용자가 직접 좌표를 확인/수정한 것이므로
-  --force를 줘도 절대 재호출하지 않는다. 이번 세션에 wellness_88.csv의
+  --force를 줘도 절대 재호출하지 않는다. 이번 세션에 data/웰니스관광지_88개_목록.csv의
   시군구 7개소를 사용자가 직접 고친 것과 동일한 human-in-the-loop 워크플로.
-- 실행이 끝나면 review_needed 행을 표로 출력한다 — wellness_88_geocoded.csv를
+- 실행이 끝나면 review_needed 행을 표로 출력한다 — data/웰니스관광지_88개_좌표.csv를
   직접 열어 mapx/mapy를 고치고 geocode_source를 manual로 바꿔주면 된다.
   TourAPI 자체에 등록되지 않은 시설(아원고택 등 다수 확인됨)은 API로는
   근본적으로 해결이 안 되므로 수동 검색(네이버지도/구글맵 좌표 복사 등)이
@@ -46,8 +46,8 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
-WELLNESS_CSV = ROOT / "wellness_88.csv"
-GEOCODED_CSV = ROOT / "wellness_88_geocoded.csv"
+WELLNESS_CSV = ROOT / "data/웰니스관광지_88개_목록.csv"
+GEOCODED_CSV = ROOT / "data/웰니스관광지_88개_좌표.csv"
 ENV_PATH = ROOT / ".env"
 
 API_BASE = "https://apis.data.go.kr/B551011/KorService2/searchKeyword2"
@@ -134,7 +134,7 @@ def search_keyword(keyword: str, api_key: str, num_rows: int = 10) -> list[dict]
 
 def region_matches(item: dict, gugun: str) -> bool:
     addr = item.get("addr1", "") or ""
-    # wellness_88.csv의 "시군구" 필드는 대부분 "시도 시군구" 2토큰이지만,
+    # data/웰니스관광지_88개_목록.csv의 "시군구" 필드는 대부분 "시도 시군구" 2토큰이지만,
     # 사용자가 일부 행을 "시도 시군구 행정동"(3~4토큰)으로 직접 보정해둔
     # 경우가 있다 — 항상 두 번째 토큰(구/군/시)이 실제 구군명이다.
     parts = gugun.split() if gugun and gugun != "(확인필요)" else []
